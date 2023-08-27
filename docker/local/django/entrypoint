@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -o errexit
+
+# Exit immediately if an undeclared variable is used.
+set -o pipefail
+
+# Exit immediately if any statement returns a non-true return value.
+set -o nounset
+
+# Set default values for PostgreSQL environment variables.
+if [ -z "${POSTGRES_USER}" ]; then
+  base_postgres_image_default_user="postgres"
+  export POSTGRES_USER="${base_postgres_image_default_user}"
+fi
+
+export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+
+# Wait for PostgreSQL to become available.
+python << END
+import sys
+import time
+import psycopg2
+
+suggest_unrecoverable_after = 30
+start = time.time()
+
+while True:
+  try:
+    psycopg2.connect(
+      dbname="${POSTGRES_DB}",
+      user="${POSTGRES_USER}",
+      password="${POSTGRES_PASSWORD}",
+      host="${POSTGRES_HOST}",
+      port="${POSTGRES_PORT}")
+    break
+  except psycopg2.OperationalError as e:
+    sys.stderr.write("Waiting for PostgreSQL to become available...\n")
+    if time.time() - start > suggest_unrecoverable_after:
+      sys.stderr.write("Taking too long. Exiting due to unrecoverable error: '{}'\n".format(error))
+    time.sleep(1)
+END
+
+>&2 echo "PostgreSQL is available."
+
+exec "$@"
