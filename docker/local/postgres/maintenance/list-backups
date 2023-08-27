@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -o errexit
+
+# Exit immediately if an undeclared variable is used.
+set -o pipefail
+
+# Exit immediately if any statement returns a non-true return value.
+set -o nounset
+
+working_dir="$(dirname ${0})"
+
+source "${working_dir}/bin/constants"
+source "${working_dir}/bin/messages"
+
+message_welcome "These are the current backups:"
+
+ls -lht "${BACKUP_DIR}"

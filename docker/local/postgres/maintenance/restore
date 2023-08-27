@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -o errexit
+
+# Exit immediately if an undeclared variable is used.
+set -o pipefail
+
+# Exit immediately if any statement returns a non-true return value.
+set -o nounset
+
+working_dir="$(dirname ${0})"
+
+source "${working_dir}/bin/constants"
+source "${working_dir}/bin/messages"
+
+if [[ -z ${1+x} ]]; then
+  message_error "Backup filename parameter is required."
+  exit 1
+fi
+
+backup_filename="${BACKUP_DIR}/${1}"
+
+if [[ ! -f "${backup_filename}" ]]; then
+  message_error "Backup file '${backup_filename}' does not exist."
+  exit 1
+fi
+
+message_welcome "Restoring the ${POSTGRES_DB} database from backup file '${backup_filename}'..."
+
+if [[ "${POSTGRES_USER}" == "postgres" ]]; then
+  message_error "Restoring as 'postgres' user is not allowed. Please assign 'POSTGRES_USER' env and try again."
+  exit 1
+fi
+
+export PGHOST="${POSTGRES_HOST}"
+export PGPORT="${POSTGRES_PORT}"
+export PGUSER="${POSTGRES_USER}"
+export PGPASSWORD="${POSTGRES_PASSWORD}"
+export PGDATABASE="${POSTGRES_DB}"
+
+message_info "Dropping the database..."
+
+dropdb "${PGDATABASE}"
+
+message_info "Creating a new database..."
+
+createdb --owner="${PGUSER}" "${PGDATABASE}"
+
+message_info "Applying the backup..."
+
+gunzip -c "${backup_filename}" | psql "${PGDATABASE}"
+
+message_success "The '${PGDATABASE}' database has been restored from backup file '${backup_filename}'."

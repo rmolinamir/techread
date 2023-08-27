@@ -3,6 +3,7 @@
 .idea
 .coverage*
 .DS_Store
+*.session.sql
 
 # Configuration files
 .config/*

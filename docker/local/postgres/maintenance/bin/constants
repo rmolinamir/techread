@@ -1,0 +1,5 @@
+#!/bin/bash
+
+BACKUP_DIR="/backups"
+
+BACKUP_PREFIX="backup"
