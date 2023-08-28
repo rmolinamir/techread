@@ -88,14 +88,7 @@ WSGI_APPLICATION = "src.project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# TODO: Use an environment variable for the database later.
 DATABASES = {"default": env.db("DATABASE_URL")}
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": "dev-database",
-#     }
-# }
 
 # Password hashers
 # https://docs.djangoproject.com/en/4.2/topics/auth/passwords/#using-argon2-with-django
@@ -164,3 +157,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Cors
 
 CORS_URLS_REGEX = r"^api/.*$"
+
+# Auth
+
+AUTH_USER_MODEL = "users.User"

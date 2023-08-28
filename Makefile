@@ -13,10 +13,10 @@ down-volumes:
 prune:
 	docker system prune -f
 
-show-logs:
+logs:
 	docker compose -f docker/local/compose.yml logs -f
 
-show-logs-techread:
+logs-techread:
 	docker compose -f docker/local/compose.yml logs techread
 
 makemigrations:
