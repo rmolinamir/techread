@@ -10,6 +10,9 @@ down:
 down-volumes:
 	docker compose -f docker/local/compose.yml down -v
 
+docker-default-platform:
+	export DOCKER_DEFAULT_PLATFORM=linux/amd64
+
 prune:
 	docker system prune -f
 
@@ -20,16 +23,16 @@ logs-techread:
 	docker compose -f docker/local/compose.yml logs techread
 
 makemigrations:
-	docker compose -f docker/local/compose.yml run --rm techread python manage.py makemigrations
+	docker compose -f docker/local/compose.yml run --rm api python manage.py makemigrations
 
 migrate:
-	docker compose -f docker/local/compose.yml run --rm techread python manage.py migrate
+	docker compose -f docker/local/compose.yml run --rm api python manage.py migrate
 
 collectstatic:
-	docker compose -f docker/local/compose.yml run --rm techread python manage.py collectstatic --noinput
+	docker compose -f docker/local/compose.yml run --rm api python manage.py collectstatic --noinput
 
 superuser:
-	docker compose -f docker/local/compose.yml run --rm techread python manage.py createsuperuser
+	docker compose -f docker/local/compose.yml run --rm api python manage.py createsuperuser
 
 volume:
 	docker volume inspect local_local_postgres_data
@@ -38,22 +41,22 @@ techread-db:
 	docker compose -f docker/local/compose.yml exec postgres psql -U techread -d techread
 
 lint:
-	docker compose -f docker/local/compose.yml exec techread flake8 .
+	docker compose -f docker/local/compose.yml exec api flake8 .
 
 format:
-	docker compose -f docker/local/compose.yml exec techread black --exclude=migrations .
+	docker compose -f docker/local/compose.yml exec api black --exclude=migrations .
 
 format-check:
-	docker compose -f docker/local/compose.yml exec techread black --check --exclude=migrations .
+	docker compose -f docker/local/compose.yml exec api black --check --exclude=migrations .
 
 format-diff:
-	docker compose -f docker/local/compose.yml exec techread black --diff --exclude=migrations .
+	docker compose -f docker/local/compose.yml exec api black --diff --exclude=migrations .
 
 isort:
-	docker compose -f docker/local/compose.yml exec techread isort --skip venv --skip migrations .
+	docker compose -f docker/local/compose.yml exec api isort --skip venv --skip migrations .
 
 isort-check:
-	docker compose -f docker/local/compose.yml exec techread isort --check-only --skip venv --skip migrations .
+	docker compose -f docker/local/compose.yml exec api isort --check-only --skip venv --skip migrations .
 
 isort-diff:
-	docker compose -f docker/local/compose.yml exec techread isort --diff --skip venv --skip migrations .
+	docker compose -f docker/local/compose.yml exec api isort --diff --skip venv --skip migrations .

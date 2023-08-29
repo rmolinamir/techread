@@ -9,7 +9,7 @@ set -o pipefail
 # Exit immediately if any statement returns a non-true return value.
 set -o nounset
 
-# Wait for PostgreSQL to become available.
+# Migrates any database changes.
 python manage.py migrate --no-input
 
 # Collect static files.
