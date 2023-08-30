@@ -7,3 +7,7 @@ class ProfilesConfig(AppConfig):
     name = "src.apps.profiles"
     verbose_name = t("Profile")
     verbose_name_plural = t("Profiles")
+
+    # Let Django know about the signals that we created in the signals.py file.
+    def ready(self):
+        from src.apps.profiles import signals  # noqa
