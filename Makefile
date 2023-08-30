@@ -60,3 +60,9 @@ isort-check:
 
 isort-diff:
 	docker compose -f docker/local/compose.yml exec api isort --diff --skip venv --skip migrations .
+
+generate-secret:
+	python -c "import secrets; print(secrets.token_urlsafe(50))"
+
+activate-venv:
+	source ./venv/bin/activate

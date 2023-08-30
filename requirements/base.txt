@@ -1,5 +1,7 @@
 argon2-cffi==21.3.0
 celery==5.2.7
+dj-rest-auth==3.0.0
+django-allauth==0.52.0
 django-autoslug==1.9.8
 django-celery-email==3.0.0
 django-cors-headers==3.14.0
@@ -9,6 +11,7 @@ django-filter==22.1
 django-phonenumber-field==7.0.2
 django-taggit==3.1.0
 django==4.1.7
+djangorestframework-simplejwt==5.2.2
 djangorestframework==3.14.0
 drf-yasg==1.21.5
 flower==1.2.0
