@@ -43,6 +43,7 @@ THIRD_PARTY_APPS = [
     "phonenumber_field",
     "drf_yasg",
     "corsheaders",
+    "djcelery_email",
 ]
 
 FIRST_PART_APPS = [
@@ -161,3 +162,16 @@ CORS_URLS_REGEX = r"^api/.*$"
 # Auth
 
 AUTH_USER_MODEL = "users.User"
+
+# Celery
+
+CELERY_BROKER_URL = env("CELERY_MESSAGE_BROKER")
+CELERY_RESULT_BACKEND = env("CELERY_MESSAGE_BROKER")
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_RESULT_BACKEND_MAX_RETRIES = 10
+CELERY_TASK_SEND_SENT_EVENT = True
+
+if USE_TZ:
+    CELERY_TIMEZONE = TIME_ZONE

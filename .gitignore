@@ -6,8 +6,8 @@
 *.session.sql
 
 # Configuration files
-.config/*
-!.config/local/
+config/*
+!config/local/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -71,8 +71,10 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-staticfiles
 mediafiles
+media_volume
+staticfiles
+static_volume
 
 # Flask stuff:
 instance/

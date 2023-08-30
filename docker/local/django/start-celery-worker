@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -o errexit
+
+# Exit immediately if any statement returns a non-true return value.
+set -o nounset
+
+exec watchfiles celery.__main__.main --args '-A src.project.celery worker -l INFO'

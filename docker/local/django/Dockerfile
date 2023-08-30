@@ -62,6 +62,18 @@ FROM base AS runner
     RUN sed -i 's/\r$//g' /start \
         && chmod +x /start
 
+    # Make start executable by removing Windows line endings.
+    # `chmod` will permit the script to be run when the container starts.
+    COPY ./docker/local/django/start-celery-worker /start-celery-worker
+    RUN sed -i 's/\r$//g' /start-celery-worker \
+        && chmod +x /start-celery-worker
+
+    # Make start executable by removing Windows line endings.
+    # `chmod` will permit the script to be run when the container starts.
+    COPY ./docker/local/django/start-celery-flower /start-celery-flower
+    RUN sed -i 's/\r$//g' /start-celery-flower \
+        && chmod +x /start-celery-flower
+
     # Copy project.
     COPY . ${APP_DIR}
 

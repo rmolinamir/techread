@@ -5,6 +5,7 @@ services:
     depends_on:
       - postgres
       - mailhog
+      - redis
     build:
       context: ../../
       dockerfile: ./docker/local/django/Dockerfile
@@ -15,9 +16,44 @@ services:
     expose:
       - "8000"
     env_file:
-      - ../../.config/local/django.env
-      - ../../.config/local/postgres.env
+      - ../../config/local/django.env
+      - ../../config/local/postgres.env
     command: /start
+    networks:
+      - techread
+
+  api_celery_flower:
+    depends_on:
+      - redis
+      - postgres
+    build:
+      context: ../../
+      dockerfile: ./docker/local/django/Dockerfile
+    volumes:
+      - flower_data:/data
+    ports:
+      - "5555:5555"
+    env_file:
+      - ../../config/local/django.env
+      - ../../config/local/postgres.env
+    command: /start-celery-flower
+    networks:
+      - techread
+
+  api_celery_worker:
+    depends_on:
+      - postgres
+      - mailhog
+      - redis
+    build:
+      context: ../../
+      dockerfile: ./docker/local/django/Dockerfile
+    volumes:
+      - ../../:/app:z
+    env_file:
+      - ../../config/local/django.env
+      - ../../config/local/postgres.env
+    command: /start-celery-worker
     networks:
       - techread
 
@@ -31,7 +67,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - ../../.config/local/postgres.env
+      - ../../config/local/postgres.env
     networks:
       - techread
 
@@ -40,6 +76,14 @@ services:
     container_name: mailhog
     ports:
       - "8025:8025"
+    networks:
+      - techread
+
+  redis:
+    image: redis:6.0.9-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
     networks:
       - techread
 
@@ -77,3 +121,4 @@ volumes:
       device: src/project/mediafiles
   postgres_data: {}
   postgres_data_backups: {}
+  flower_data: {}

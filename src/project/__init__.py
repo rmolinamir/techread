@@ -12,3 +12,7 @@ In general, it is a good idea to put any initialization code for a package in th
 This will ensure that the code is executed whenever the package is imported, and it will help to keep
 the code organized.
 """
+from .celery import app as celery_app
+
+# This will make sure the app is always imported when Django starts so that shared_task will use this app.
+__all__ = ("celery_app",)
