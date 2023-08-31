@@ -55,12 +55,15 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth",
     "dj_rest_auth.registration",
+    "taggit",
 ]
 
 TECHREAD_APPS = [
     "src.apps.common",
     "src.apps.profiles",
     "src.apps.users",
+    "src.apps.articles",
+    "src.apps.ratings",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + TECHREAD_APPS
