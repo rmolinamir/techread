@@ -16,7 +16,10 @@ import environ
 
 env = environ.Env()
 
+#
 # Runtime settings
+#
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +27,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT_DIR / "src/apps"
 
 DEBUG = env.bool("DJANGO_DEBUG", False)
+
 
 # Application definition
 
@@ -53,13 +57,13 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth.registration",
 ]
 
-FIRST_PART_APPS = [
+TECHREAD_APPS = [
     "src.apps.common",
     "src.apps.profiles",
     "src.apps.users",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + FIRST_PART_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + TECHREAD_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -98,9 +102,9 @@ WSGI_APPLICATION = "src.project.wsgi.application"
 
 DATABASES = {"default": env.db("DATABASE_URL")}
 
+
 # Password hashers
 # https://docs.djangoproject.com/en/4.2/topics/auth/passwords/#using-argon2-with-django
-
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
@@ -141,9 +145,11 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 # Admin site
 
 SITE_ID = 1
+
 ADMIN_URL = "admin/"
 
 
@@ -162,13 +168,16 @@ MEDIA_ROOT = str(ROOT_DIR / "mediafiles")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 # Cors
 
 CORS_URLS_REGEX = r"^api/.*$"
 
+
 # Auth
 
 AUTH_USER_MODEL = "users.User"
+
 
 # Celery
 
@@ -182,6 +191,7 @@ CELERY_TASK_SEND_SENT_EVENT = True
 
 if USE_TZ:
     CELERY_TIMEZONE = TIME_ZONE
+
 
 # JWT Auth
 
@@ -203,7 +213,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "SIGNING_KEY": env("JWT_SECRET_KEY"),
-    "USER_ID_FIELD": "user_id",
+    "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "sub",
 }
 
@@ -230,3 +240,24 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = (
 )
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
+
+
+# Logging & Debugging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(name)-12s %(asctime)s %(module)s %(process)s %(thread)d %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
+    "root": {"level": "INFO", "handlers": ["console"]},
+}

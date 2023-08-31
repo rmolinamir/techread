@@ -13,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
 
     list_display = [
         "_id",
-        "user_id",
+        "id",
         "email",
         "first_name",
         "last_name",
@@ -21,7 +21,7 @@ class UserAdmin(BaseUserAdmin):
         "is_active",
     ]
 
-    list_display_links = ["_id", "user_id", "email"]
+    list_display_links = ["_id", "id", "email"]
 
     list_filter = ["email", "is_staff", "is_active"]
 

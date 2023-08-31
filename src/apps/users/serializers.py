@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "user_id",
+            "id",
             "email",
             "first_name",
             "last_name",
@@ -53,16 +53,15 @@ class CustomRegisterSerializer(RegisterSerializer):
             "first_name": self.validated_data.get("first_name", ""),
             "last_name": self.validated_data.get("last_name", ""),
             "password1": self.validated_data.get("password1", ""),
-            "password2": self.validated_data.get("password2", ""),
         }
 
     def save(self, request):
         adapter = get_adapter()
+
         user = adapter.new_user(request)
-
         self.cleaned_data = self.get_cleaned_data()
-
-        adapter.save_user(request, user, self)
+        user = adapter.save_user(request, adapter.new_user(request), self)
+        user.save()
 
         setup_user_email(request, user, [])
 
@@ -70,6 +69,5 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.password = self.cleaned_data.get("password1")
         user.first_name = self.cleaned_data.get("first_name")
         user.last_name = self.cleaned_data.get("last_name")
-        user.save()
 
         return user

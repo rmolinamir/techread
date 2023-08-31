@@ -37,6 +37,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0)),
     path(settings.ADMIN_URL, admin.site.urls),
+    # Auth URLs
     path("api/v1/auth/user/", UserDetailsView.as_view(), name="user_details"),
     path("api/v1/auth/", include("dj_rest_auth.urls")),
     path("api/v1/auth/registration/", include("dj_rest_auth.registration.urls")),
@@ -45,6 +46,8 @@ urlpatterns = [
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
+    # Profiles URLs
+    path("api/v1/profiles/", include("src.apps.profiles.urls")),
 ]
 
 admin.site.site_header = "TechRead Admin"

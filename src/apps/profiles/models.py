@@ -50,8 +50,8 @@ class Profile(BaseEntityModel):
     def unfollow(self, profile):
         self.following.remove(profile)
 
-    def is_followed(self, profile) -> bool:
-        return self.followers.filter(_id=profile._id).exists()
-
     def is_following(self, profile) -> bool:
         return self.following.filter(_id=profile._id).exists()
+
+    def is_follower(self, profile) -> bool:
+        return profile.followers.filter(_id=self._id).exists()

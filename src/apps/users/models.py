@@ -23,7 +23,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.first_name
 
     _id = models.BigAutoField(primary_key=True, editable=False)
-    user_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     first_name = models.CharField(verbose_name=t("First Name"), max_length=50)
     last_name = models.CharField(verbose_name=t("Last Name"), max_length=50)
