@@ -20,8 +20,14 @@ class Article(BaseEntityModel):
     slug = AutoSlugField(
         populate_from="title", always_update=True, unique=True, editable=False
     )
-    body = models.TextField(verbose_name=t("Article Content"))
-    banner_image = models.ImageField(verbose_name=t("Banner Image"))
+    description = models.TextField(verbose_name=t("Article Description"), blank=True)
+    body = models.TextField(verbose_name=t("Article Content"), blank=True)
+    banner_image = models.ImageField(
+        verbose_name=t("Banner Image"),
+        blank=True,
+        null=True,
+        default="default_photos/article.png",
+    )
     tags = TaggableManager(verbose_name=t("Tags"))
 
     def __str__(self):
@@ -29,7 +35,7 @@ class Article(BaseEntityModel):
 
     @property
     def estimated_reading_time(self):
-        return ArticleReadTimeEngine(self).estimate_reading_time()
+        return ArticleReadTimeEngine.estimate_reading_time(self)
 
     def view_count(self):
         return self.article_views.count()

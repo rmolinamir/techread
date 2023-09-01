@@ -32,7 +32,7 @@ class Profile(BaseEntityModel):
     city = models.CharField(verbose_name=t("City"), max_length=255, blank=True)
     profile_photo = models.ImageField(
         verbose_name=t("Profile Photo"),
-        default="profile_photos/default.png",
+        default="default_photos/profile.png",
     )
     twitter_handle = models.CharField(
         verbose_name=t("Twitter Handle"), max_length=255, blank=True
