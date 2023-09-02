@@ -40,6 +40,12 @@ class Article(BaseEntityModel):
     def view_count(self):
         return self.article_views.count()
 
+    def average_rating(self):
+        average = (
+            self.ratings.aggregate(avg_rating=models.Avg("rating"))["avg_rating"] or 0
+        )
+        return round(average, 2)
+
 
 class ArticleView(BaseEntityModel):
     class Meta:
@@ -64,7 +70,7 @@ class ArticleView(BaseEntityModel):
 
     @classmethod
     def record_view(cls, article, user, viewer_ip):
-        view, created = cls.objects.get_or_create(
+        view, _created = cls.objects.get_or_create(
             article=article, user=user, viewer_ip=viewer_ip
         )
         view.save()

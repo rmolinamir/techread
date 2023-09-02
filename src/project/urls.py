@@ -50,6 +50,8 @@ urlpatterns = [
     path("api/v1/profiles/", include("src.apps.profiles.urls")),
     # Articles URLs
     path("api/v1/articles/", include("src.apps.articles.urls")),
+    # Ratings URLs
+    path("api/v1/ratings/", include("src.apps.ratings.urls")),
 ]
 
 admin.site.site_header = "TechRead Admin"
