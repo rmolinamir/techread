@@ -46,6 +46,10 @@ class Article(BaseEntityModel):
         )
         return round(average, 2)
 
+    def claps_count(self):
+        sum = self.claps.aggregate(count_sum=models.Sum("count"))["count_sum"] or 0
+        return sum
+
 
 class ArticleView(BaseEntityModel):
     class Meta:
@@ -74,3 +78,22 @@ class ArticleView(BaseEntityModel):
             article=article, user=user, viewer_ip=viewer_ip
         )
         view.save()
+
+
+class Clap(BaseEntityModel):
+    class Meta:
+        verbose_name = t("Clap")
+        verbose_name_plural = t("Claps")
+        unique_together = ("article", "user")
+        ordering = ("-created_at",)
+
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="claps")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="claps")
+    count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.user.first_name}'s Clap for {self.article.title}"
+
+    def perform_clap(self):
+        self.count += 1
+        self.save()

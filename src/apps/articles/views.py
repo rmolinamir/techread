@@ -1,14 +1,15 @@
 import logging
 
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import filters, generics, permissions, status
 from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth import get_user_model
 from django.core.files.storage import default_storage
 from rest_framework.parsers import MultiPartParser, FormParser
-from .models import Article, ArticleView
-from .serializers import ArticleSerializer
+from .models import Article, ArticleView, Clap
+from .serializers import ArticleSerializer, ClapSerializer
 from .filters import ArticleFilter
 from .pagination import ArticlePagination
 from .renderers import ArticleJSONRenderer, ArticlesJSONRenderer
@@ -72,3 +73,48 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data)
         except Http404:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class ClapArticleView(generics.CreateAPIView, generics.DestroyAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ClapSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    lookup_field = "id"
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        article_id = self.kwargs.get("article_id")
+        article = get_object_or_404(Article, id=article_id)
+
+        user_clap = Clap.objects.filter(user=user, article=article)
+
+        if user_clap.exists():
+            clap = user_clap.first()
+        else:
+            clap = Clap.objects.create(user=user, article=article)
+
+        clap.perform_clap()
+
+        return Response(
+            {"detail": "Clap added to article"},
+            status=status.HTTP_201_CREATED,
+        )
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        article_id = self.kwargs.get("article_id")
+        article = get_object_or_404(Article, id=article_id)
+
+        if Clap.objects.filter(user=user, article=article).exists():
+            clap = Clap.objects.get(user=user, article=article)
+            clap.delete()
+
+            return Response(
+                {"detail": "Clap removed from article"},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        else:
+            return Response(
+                {"detail": "Clap does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from src.apps.profiles.serializers import ProfileSerializer
 from src.apps.bookmarks.models import Bookmark
-from .models import Article, ArticleView
+from .models import Article, ArticleView, Clap
 
 
 class TagListField(serializers.Field):
@@ -36,6 +36,7 @@ class ArticleSerializer(serializers.ModelSerializer):
             "author_info",
             "views",
             "average_rating",
+            "claps_count",
             "bookmarks",
             "description",
             "body",
@@ -50,12 +51,16 @@ class ArticleSerializer(serializers.ModelSerializer):
     banner_image = serializers.SerializerMethodField()
     views = serializers.SerializerMethodField()
     average_rating = serializers.ReadOnlyField()
+    claps_count = serializers.ReadOnlyField()
     bookmarks = serializers.SerializerMethodField()
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
 
     def get_average_rating(self, obj):
         return obj.average_rating()
+
+    def get_clap_count(self, obj):
+        return obj.claps_count()
 
     def get_banner_image(self, obj):
         return obj.banner_image.url
@@ -96,3 +101,16 @@ class ArticleSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class ClapSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Clap
+        fields = ["id", "article_title", "user_first_name", "user_last_name"]
+
+    article_title = serializers.CharField(source="article.title", read_only=True)
+    user_first_name = serializers.CharField(source="user.first_name", read_only=True)
+    user_last_name = serializers.CharField(source="user.last_name", read_only=True)
+
+    def get_claps(self, obj):
+        return obj.claps.count()
