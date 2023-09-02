@@ -64,6 +64,7 @@ TECHREAD_APPS = [
     "src.apps.users",
     "src.apps.articles",
     "src.apps.ratings",
+    "src.apps.bookmarks",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + TECHREAD_APPS
@@ -212,8 +213,8 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # TODO: Use env for this
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # TODO: Use env for this
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # TODO: Use an env variable for this.
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # TODO: Use an env variable for this.
     "ROTATE_REFRESH_TOKENS": True,
     "SIGNING_KEY": env("JWT_SECRET_KEY"),
     "USER_ID_FIELD": "id",
