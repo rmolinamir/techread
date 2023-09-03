@@ -1,7 +1,9 @@
 from rest_framework import serializers
+
+from src.apps.bookmarks.models import Bookmark
 from src.apps.profiles.serializers import ProfileSerializer
 from src.apps.responses.serializers import ResponseSerializer
-from src.apps.bookmarks.models import Bookmark
+
 from .models import Article, ArticleView, Clap
 
 
@@ -11,9 +13,7 @@ class TagListField(serializers.Field):
 
     def to_internal_value(self, data):
         if not isinstance(data, list):
-            raise serializers.ValidationError(
-                "Expected a list of tags but got type '%s'." % type(data).__name__
-            )
+            raise serializers.ValidationError("Expected a list of tags but got type '%s'." % type(data).__name__)
 
         tags = []
 
@@ -98,9 +98,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get("title", instance.title)
         instance.description = validated_data.get("description", instance.description)
         instance.body = validated_data.get("body", instance.body)
-        instance.banner_image = validated_data.get(
-            "banner_image", instance.banner_image
-        )
+        instance.banner_image = validated_data.get("banner_image", instance.banner_image)
         instance.updated_at = validated_data.get("updated_at", instance.updated_at)
 
         if "tags" in validated_data:

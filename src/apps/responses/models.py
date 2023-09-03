@@ -1,8 +1,9 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.utils.translation import gettext_lazy as t
-from src.apps.common.models import BaseEntityModel
+
 from src.apps.articles.models import Article
+from src.apps.common.models import BaseEntityModel
 
 User = get_user_model()
 
@@ -14,9 +15,7 @@ class Response(BaseEntityModel):
         ordering = ("-created_at",)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="responses")
-    article = models.ForeignKey(
-        Article, on_delete=models.CASCADE, related_name="responses"
-    )
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="responses")
     parent_response = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,

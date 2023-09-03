@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as t
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
+
 from src.apps.common.models import BaseEntityModel
 
 User = get_user_model()
@@ -16,12 +17,8 @@ class Profile(BaseEntityModel):
         OTHER = "O", t("Other")
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    phone_number = PhoneNumberField(
-        verbose_name=t("Phone Number"), max_length=30, default="+11111111111"
-    )
-    about_me = models.TextField(
-        verbose_name=t("About Me"), default="Say something about yourself!"
-    )
+    phone_number = PhoneNumberField(verbose_name=t("Phone Number"), max_length=30, default="+11111111111")
+    about_me = models.TextField(verbose_name=t("About Me"), default="Say something about yourself!")
     gender = models.CharField(
         verbose_name=t("Gender"),
         choices=Gender.choices,
@@ -34,12 +31,8 @@ class Profile(BaseEntityModel):
         verbose_name=t("Profile Photo"),
         default="default_photos/profile.png",
     )
-    twitter_handle = models.CharField(
-        verbose_name=t("Twitter Handle"), max_length=255, blank=True
-    )
-    followers = models.ManyToManyField(
-        "self", related_name="following", blank=True, symmetrical=False
-    )
+    twitter_handle = models.CharField(verbose_name=t("Twitter Handle"), max_length=255, blank=True)
+    followers = models.ManyToManyField("self", related_name="following", blank=True, symmetrical=False)
 
     def __str__(self):
         return f"{self.user.first_name}'s Profile"

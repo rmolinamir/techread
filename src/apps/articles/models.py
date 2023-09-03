@@ -3,7 +3,9 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as t
 from taggit.managers import TaggableManager
+
 from src.apps.common.models import BaseEntityModel
+
 from .read_time_engine import ArticleReadTimeEngine
 
 User = get_user_model()
@@ -17,9 +19,7 @@ class Article(BaseEntityModel):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="articles")
     title = models.CharField(verbose_name=t("Title"), max_length=255)
-    slug = AutoSlugField(
-        populate_from="title", always_update=True, unique=True, editable=False
-    )
+    slug = AutoSlugField(populate_from="title", always_update=True, unique=True, editable=False)
     description = models.TextField(verbose_name=t("Article Description"), blank=True)
     body = models.TextField(verbose_name=t("Article Content"), blank=True)
     banner_image = models.ImageField(
@@ -41,9 +41,7 @@ class Article(BaseEntityModel):
         return self.article_views.count()
 
     def average_rating(self):
-        average = (
-            self.ratings.aggregate(avg_rating=models.Avg("rating"))["avg_rating"] or 0
-        )
+        average = self.ratings.aggregate(avg_rating=models.Avg("rating"))["avg_rating"] or 0
         return round(average, 2)
 
     def claps_count(self):
@@ -56,15 +54,9 @@ class ArticleView(BaseEntityModel):
         verbose_name = t("Article View")
         verbose_name_plural = t("Article Views")
 
-    article = models.ForeignKey(
-        Article, on_delete=models.CASCADE, related_name="article_views"
-    )
-    user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="article_views"
-    )
-    viewer_ip = models.GenericIPAddressField(
-        verbose_name=t("Viewer IP"), null=True, blank=True
-    )
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="article_views")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="article_views")
+    viewer_ip = models.GenericIPAddressField(verbose_name=t("Viewer IP"), null=True, blank=True)
 
     def __str__(self):
         if self.user:
@@ -74,9 +66,7 @@ class ArticleView(BaseEntityModel):
 
     @classmethod
     def record_view(cls, article, user, viewer_ip):
-        view, _created = cls.objects.get_or_create(
-            article=article, user=user, viewer_ip=viewer_ip
-        )
+        view, _created = cls.objects.get_or_create(article=article, user=user, viewer_ip=viewer_ip)
         view.save()
 
 

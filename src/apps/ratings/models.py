@@ -1,6 +1,7 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.utils.translation import gettext_lazy as t
+
 from src.apps.articles.models import Article
 from src.apps.common.models import BaseEntityModel
 
@@ -20,9 +21,7 @@ class Rating(BaseEntityModel):
         (4, "Very Good"),
         (5, "Excellent"),
     )
-    article = models.ForeignKey(
-        Article, related_name="ratings", on_delete=models.CASCADE
-    )
+    article = models.ForeignKey(Article, related_name="ratings", on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name="ratings", on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
     review = models.TextField(blank=True)

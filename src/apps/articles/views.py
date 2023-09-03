@@ -1,19 +1,20 @@
 import logging
 
-from django.http import Http404
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework import filters, generics, permissions, status
-from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth import get_user_model
 from django.core.files.storage import default_storage
-from rest_framework.parsers import MultiPartParser, FormParser
-from .models import Article, ArticleView, Clap
-from .serializers import ArticleSerializer, ClapSerializer
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, generics, permissions, status
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.response import Response
+
 from .filters import ArticleFilter
+from .models import Article, ArticleView, Clap
 from .pagination import ArticlePagination
-from .renderers import ArticleJSONRenderer, ArticlesJSONRenderer
 from .permissions import IsAuthorOrReadOnly
+from .renderers import ArticleJSONRenderer, ArticlesJSONRenderer
+from .serializers import ArticleSerializer, ClapSerializer
 
 User = get_user_model()
 
@@ -35,9 +36,7 @@ class ArticleListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-        logger.info(
-            f"Article {serializer.data.get('title')} created by {self.request.user.first_name}"
-        )
+        logger.info(f"Article {serializer.data.get('title')} created by {self.request.user.first_name}")
 
 
 class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -53,10 +52,7 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
         if "banner_image" in self.request.FILES:
             # Delete old banner image if it exists.
-            if (
-                instance.banner_image
-                and "default_photos" not in instance.banner_image.url
-            ):
+            if instance.banner_image and "default_photos" not in instance.banner_image.url:
                 default_storage.delete(instance.banner_image.path)
 
             instance.banner_image = self.request.FILES.get("banner_image")
@@ -66,9 +62,7 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         try:
             article = self.get_object()
             viewer_ip = self.request.META.get("REMOTE_ADDR")
-            ArticleView.record_view(
-                article=article, user=request.user, viewer_ip=viewer_ip
-            )
+            ArticleView.record_view(article=article, user=request.user, viewer_ip=viewer_ip)
             serializer = self.get_serializer(article)
             return Response(serializer.data)
         except Http404:

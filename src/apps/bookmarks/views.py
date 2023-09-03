@@ -4,6 +4,7 @@ from rest_framework.exceptions import ValidationError
 
 from src.apps.articles.models import Article
 from src.apps.bookmarks.exceptions import ArticleAlreadyBookmarked
+
 from .models import Bookmark
 from .serializers import BookmarkSerializer
 

@@ -29,9 +29,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", False)
         extra_fields.setdefault("is_active", True)
 
-        user = self.model(
-            first_name=first_name, last_name=last_name, email=email, **extra_fields
-        )
+        user = self.model(first_name=first_name, last_name=last_name, email=email, **extra_fields)
 
         user.set_password(password)
 

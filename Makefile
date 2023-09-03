@@ -66,3 +66,6 @@ generate-secret:
 
 activate-venv:
 	source ./venv/bin/activate
+
+elasticsearch-index:
+	docker compose -f docker/local/compose.yml exec api python manage.py search_index --rebuild -f

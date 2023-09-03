@@ -4,9 +4,7 @@ from math import ceil
 
 class ArticleReadTimeEngine:
     @staticmethod
-    def estimate_reading_time(
-        article, words_per_minute=250, seconds_per_image=10, seconds_per_tag=2
-    ) -> int:
+    def estimate_reading_time(article, words_per_minute=250, seconds_per_image=10, seconds_per_tag=2) -> int:
         word_count_title = ArticleReadTimeEngine._word_count(article.title)
         word_count_body = ArticleReadTimeEngine._word_count(article.body)
         word_count_description = ArticleReadTimeEngine._word_count(article.description)

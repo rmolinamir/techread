@@ -1,10 +1,12 @@
 from django.db import IntegrityError
 from rest_framework import generics, permissions
-from src.apps.ratings.exceptions import ArticleAlreadyRated
-from .serializers import RatingSerializer
-from .models import Rating
-from src.apps.articles.models import Article
 from rest_framework.exceptions import ValidationError
+
+from src.apps.articles.models import Article
+from src.apps.ratings.exceptions import ArticleAlreadyRated
+
+from .models import Rating
+from .serializers import RatingSerializer
 
 
 class RatingCreateView(generics.CreateAPIView):

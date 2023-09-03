@@ -5,9 +5,7 @@ from .base import env
 ADMINS = [("Robert Molina", "rmolinamir@gmail.com")]
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env(
-    "DJANGO_SECRET_KEY", default="WneRPSDeZKXcTAIjvQa1DTTyY4L7L3o6CHJwNJ2SwoCaWAIxA5E"
-)
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="WneRPSDeZKXcTAIjvQa1DTTyY4L7L3o6CHJwNJ2SwoCaWAIxA5E")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
