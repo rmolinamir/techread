@@ -69,3 +69,9 @@ activate-venv:
 
 elasticsearch-index:
 	docker compose -f docker/local/compose.yml exec api python manage.py search_index --rebuild -f
+
+test-coverage:
+	docker compose -f docker/local/compose.yml run --rm api pytest -p no:warnings --cov=. -v
+
+test-coverage-html:
+	docker compose -f docker/local/compose.yml run --rm api pytest -p no:warnings --cov=. --cov-report html
