@@ -56,6 +56,8 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "taggit",
+    "django_elasticsearch_dsl",
+    "django_elasticsearch_dsl_drf",
 ]
 
 TECHREAD_APPS = [
@@ -66,6 +68,7 @@ TECHREAD_APPS = [
     "src.apps.ratings",
     "src.apps.bookmarks",
     "src.apps.responses",
+    "src.apps.search",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + TECHREAD_APPS
@@ -105,7 +108,13 @@ WSGI_APPLICATION = "src.project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL")}
+DEFAULT_DATABASE_URL = (
+    "postgres://"
+    f"{env('POSTGRES_USER')}:{env('POSTGRES_PASSWORD')}"
+    f"@{env('POSTGRES_HOST')}:{env('POSTGRES_PORT')}"
+    f"/{env('POSTGRES_DB')}"
+)
+DATABASES = {"default": env.db("DATABASE_URL", default=DEFAULT_DATABASE_URL)}
 
 
 # Password hashers
@@ -236,15 +245,20 @@ AUTHENTICATION_BACKENDS = [
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = (
-    "mandatory"  # Requires email verification to complete sign up.
-)
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Requires email verification to complete sign up.
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # Confirms email address on a GET request.
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = (
-    1  # Sets the number of days after which the email confirmation token expires.
-)
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1  # Sets the number of days after which the email confirmation token expires.
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
+
+
+# Elasticsearch
+
+ELASTICSEARCH_DSL = {
+    "default": {
+        "hosts": env("ELASTICSEARCH_URL"),
+    },
+}
 
 
 # Logging & Debugging
@@ -253,9 +267,7 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(name)-12s %(asctime)s %(module)s %(process)s %(thread)d %(message)s"
-        }
+        "verbose": {"format": "%(levelname)s %(name)-12s %(asctime)s %(module)s %(process)s %(thread)d %(message)s"}
     },
     "handlers": {
         "console": {

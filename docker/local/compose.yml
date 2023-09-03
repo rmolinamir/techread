@@ -6,6 +6,7 @@ services:
       - postgres
       - mailhog
       - redis
+      - elasticsearch
     build:
       context: ../../
       dockerfile: ./docker/local/django/Dockerfile
@@ -18,6 +19,7 @@ services:
     env_file:
       - ../../config/local/django.env
       - ../../config/local/postgres.env
+      - ../../config/local/elasticsearch.env
     command: /start
     networks:
       - techread
@@ -54,6 +56,15 @@ services:
       - ../../config/local/django.env
       - ../../config/local/postgres.env
     command: /start-celery-worker
+    networks:
+      - techread
+
+  elasticsearch:
+    image: elasticsearch:7.17.9
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
     networks:
       - techread
 
