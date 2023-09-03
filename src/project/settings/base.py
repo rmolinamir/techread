@@ -65,6 +65,7 @@ TECHREAD_APPS = [
     "src.apps.articles",
     "src.apps.ratings",
     "src.apps.bookmarks",
+    "src.apps.responses",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + TECHREAD_APPS

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from src.apps.profiles.serializers import ProfileSerializer
+from src.apps.responses.serializers import ResponseSerializer
 from src.apps.bookmarks.models import Bookmark
 from .models import Article, ArticleView, Clap
 
@@ -38,6 +39,8 @@ class ArticleSerializer(serializers.ModelSerializer):
             "average_rating",
             "claps_count",
             "bookmarks",
+            "responses",
+            "responses_count",
             "description",
             "body",
             "banner_image",
@@ -52,9 +55,14 @@ class ArticleSerializer(serializers.ModelSerializer):
     views = serializers.SerializerMethodField()
     average_rating = serializers.ReadOnlyField()
     claps_count = serializers.ReadOnlyField()
+    responses = ResponseSerializer(many=True, read_only=True)
+    responses_count = serializers.IntegerField(source="responses.count", read_only=True)
     bookmarks = serializers.SerializerMethodField()
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
+
+    def get_responses_count(self, obj):
+        return obj.responses.count()
 
     def get_average_rating(self, obj):
         return obj.average_rating()
