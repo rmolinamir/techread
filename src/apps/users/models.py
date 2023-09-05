@@ -13,16 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = t("User")
         verbose_name_plural = t("Users")
 
-    def __str__(self):
-        return f"{self.first_name.title()} {self.last_name.title()}"
-
-    @property
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
-
-    @property
-    def short_name(self):
-        return self.first_name
+    objects = CustomUserManager()
 
     _id = models.BigAutoField(primary_key=True, editable=False)
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -40,4 +31,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
-    objects = CustomUserManager()
+    @property
+    def full_name(self):
+        return f"{self.first_name.title()} {self.last_name.title()}"
+
+    @property
+    def short_name(self):
+        return self.first_name.title()
+
+    def __str__(self):
+        return self.full_name
